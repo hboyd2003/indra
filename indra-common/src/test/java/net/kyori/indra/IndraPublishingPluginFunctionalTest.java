@@ -29,6 +29,8 @@ import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import net.kyori.indra.test.FunctionalTestDisplayNameGenerator;
 import net.kyori.indra.test.IndraConfigCacheFunctionalTest;
 import net.kyori.indra.test.SettingsFactory;
@@ -55,12 +57,15 @@ public class IndraPublishingPluginFunctionalTest {
 
     SettingsFactory.createSettings(ctx, "keyAndPasswordSigning");
 
-    final BuildResult result = ctx.build("signJar", "-PforceSign"); // Force sign snapshot
+    final BuildResult result = ctx.build("signJar", "-PforceSign", "--stacktrace", "--info"); // Force sign snapshot
 
+    System.out.println("Unique string to find where you are!");
+    System.out.println(result.getOutput());
+    System.out.println("File list: " + Files.list(ctx.outputDirectory().resolve("build").resolve("libs")).map(Path::toString).collect(Collectors.joining(", ")));
     assertEquals(TaskOutcome.SUCCESS, result.task(":signJar").getOutcome());
     assertSignatureOf("EB716BFC33B790AB",
       ctx.outputDirectory().resolve(publicKeyFileName),
-      ctx.outputDirectory().resolve("build/libs/keyAndPasswordSigning-1.0.0-SNAPSHOT.jar"));
+      ctx.outputDirectory().resolve("build/libs/keyandpasswordsigning-1.0.0-SNAPSHOT.jar"));
   }
 
   @IndraConfigCacheFunctionalTest
@@ -75,15 +80,21 @@ public class IndraPublishingPluginFunctionalTest {
 
     SettingsFactory.createSettings(ctx, "keyIdAndPasswordSigning");
 
-    final BuildResult result = ctx.build("signJar", "-PforceSign"); // Force sign snapshot
+    final BuildResult result = ctx.build("signJar", "-PforceSign", "--stacktrace", "--info"); // Force sign snapshot
 
+    System.out.println("Unique string to find where you are!");
+    System.out.println(result.getOutput());
+    System.out.println("File list: " + Files.list(ctx.outputDirectory().resolve("build").resolve("libs")).map(Path::toString).collect(Collectors.joining(", ")));
     assertEquals(TaskOutcome.SUCCESS, result.task(":signJar").getOutcome());
     assertSignatureOf("38D0BE1A808D8604",
       ctx.outputDirectory().resolve(publicKeyFileName),
-      ctx.outputDirectory().resolve("build/libs/keyIdAndPasswordSigning-1.0.0-SNAPSHOT.jar"));
+      ctx.outputDirectory().resolve("build/libs/keyidandpasswordsigning-1.0.0-SNAPSHOT.jar"));
   }
 
   private static void assertSignatureOf(final String keyId, final Path keyRingFilePath, final Path artifactFilePath) throws IOException, InterruptedException {
+    System.out.println("Very unique string to find where you are!");
+    System.out.println(keyRingFilePath);
+    System.out.println(artifactFilePath);
     assertTrue(Files.exists(artifactFilePath));
 
     final Path signatureFilePath = artifactFilePath.getParent().resolve(artifactFilePath.getFileName() + ".asc");

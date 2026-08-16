@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "net.kyori"
-version = "4.1.1-SNAPSHOT"
+version = "4.2.0-SNAPSHOT"
 description = "KyoriPowered organizational build standards and utilities"
 
 def libs = extensions.getByName("libs")
@@ -61,7 +61,7 @@ subprojects {
       testWith(17, 21, 25)
     }
 
-    signWithKeyFromPrefixedProperties("kyori")
+    signWithKeyFromPrefixedProperties("hboyd")
     configurePublications {
       pom {
         organization {
@@ -101,6 +101,13 @@ subprojects {
       }
     }
 
-    publishSnapshotsTo("papermc", "https://repo.papermc.io/repository/maven-snapshots/")
+    publishReleasesTo("hboydDev", "https://repo.hboyd.dev/releases")
+    publishSnapshotsTo("hboydDev", "https://repo.hboyd.dev/snapshots")
+  }
+
+  test {
+    testLogging {
+      showStandardStreams = true
+    }
   }
 }
